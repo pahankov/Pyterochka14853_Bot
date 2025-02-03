@@ -11,7 +11,6 @@ from config.config import TOKEN
 # Инициализация глобальных переменных
 bot = Bot(token=TOKEN)
 
-
 def run_webhook_server(httpd):
     try:
         log_time('Сейчас запускаем сервер вебхуков с SSL...')
@@ -22,7 +21,6 @@ def run_webhook_server(httpd):
     finally:
         log_time("Завершение работы сервера вебхуков")
 
-
 def start_webhook_server(server_class=HTTPServer, handler_class=BaseHTTPRequestHandler, port=443):
     log_time("Начинаем настройку и запуск сервера...")
     try:
@@ -32,7 +30,7 @@ def start_webhook_server(server_class=HTTPServer, handler_class=BaseHTTPRequestH
         log_time("Адрес сервера и класс обработчика настроены успешно")
 
         log_time("Создание SSL контекста...")
-        context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        context = ssl.SSLContext(ssl.PROTOCOL_TLS)
         context.load_cert_chain(certfile="C:/PythonProect/Pyterochka14853_Bot/ssl/certificate.crt",
                                 keyfile="C:/PythonProect/Pyterochka14853_Bot/ssl/private.key")
         log_time("SSL контекст создан успешно")
@@ -53,7 +51,6 @@ def start_webhook_server(server_class=HTTPServer, handler_class=BaseHTTPRequestH
     except Exception as e:
         log_time(f"Ошибка при запуске: {e}")
 
-
 def stop_webhook_server(httpd):
     log_time("Начинаем остановку сервера вебхуков...")
     try:
@@ -63,7 +60,6 @@ def stop_webhook_server(httpd):
             log_time('Сервер вебхуков успешно остановлен')
     except Exception as e:
         log_time(f"Ошибка при остановке сервера: {e}")
-
 
 class WebhookHandler(BaseHTTPRequestHandler):
     def do_GET(self):
