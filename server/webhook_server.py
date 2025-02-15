@@ -1,113 +1,93 @@
-import json
+import logging  # Добавлен явный импорт
 import ssl
-import threading
+from uuid import uuid4
+from aiohttp import web
+from aiogram import Bot, Dispatcher
+from config.settings import SSL_CERT, SSL_KEY, WEBHOOK_PATH
+from server.server_logger import setup_logger
+import json
 import asyncio
-from http.server import BaseHTTPRequestHandler, HTTPServer
-from telegram import Update, Bot
-from server.utils import log_time
-from server.handlers import CommandHandlers
-from config.config import TOKEN
+import traceback
+from pathlib import Path
 
-# Инициализация глобальных переменных
-bot = Bot(token=TOKEN)
+logger = setup_logger("webhook_server")
 
-def run_webhook_server(httpd):
+
+class SensitiveDataFilter(logging.Filter):
+    """Фильтр для маскировки конфиденциальных данных."""
+
+    def filter(self, record):
+        if "chat_id=" in record.msg:
+            record.msg = record.msg.replace("chat_id=", "chat_id=***")
+        return True
+
+
+logger.addFilter(SensitiveDataFilter())
+
+
+async def handle_webhook(request: web.Request):
+    request_id = uuid4().hex[:6]
     try:
-        log_time('Сейчас запускаем сервер вебхуков с SSL...')
-        httpd.serve_forever()
-        log_time('Сервер вебхуков успешно запущен')
-    except Exception as e:
-        log_time(f"Ошибка при запуске сервера вебхуков: {e}")
-    finally:
-        log_time("Завершение работы сервера вебхуков")
+        client_ip = request.remote
+        logger.info(f"Request ID={request_id} | IP={client_ip}")
 
-def start_webhook_server(server_class=HTTPServer, handler_class=BaseHTTPRequestHandler, port=443):
-    log_time("Начинаем настройку и запуск сервера...")
+        # Логируем только ключевые заголовки
+        headers = {k: v for k, v in request.headers.items() if k.lower() in {"host", "content-type"}}
+        logger.debug(f"Request ID={request_id} | Headers: {json.dumps(headers, ensure_ascii=False)}")
+
+        data = await request.json()
+        logger.debug(f"Request ID={request_id} | Body: {json.dumps(data, ensure_ascii=False)}")
+
+        if "message" not in data or "chat" not in data["message"]:
+            logger.error(f"Request ID={request_id} | Отсутствует chat.id")
+            return web.Response(status=400, text="Bad Request")
+
+        chat_id = data["message"]["chat"]["id"]
+        logger.info(f"Request ID={request_id} | Обработка сообщения от chat_id=***")
+
+        bot = request.app["bot"]
+        dp = request.app["dp"]
+        await dp.feed_webhook_update(bot, data)
+
+        logger.info(f"Request ID={request_id} | Ответ: 200 OK")
+        return web.Response(text="OK")
+
+    except json.JSONDecodeError:
+        logger.error(f"Request ID={request_id} | Невалидный JSON")
+        return web.Response(status=400, text="Invalid JSON")
+    except Exception as e:
+        logger.critical(f"Request ID={request_id} | Ошибка: {traceback.format_exc()}")
+        return web.Response(status=500, text="Internal Server Error")
+
+
+async def run_server(bot: Bot, dp: Dispatcher):
     try:
-        log_time("Настройка адреса сервера и класса обработчика...")
-        server_address = ('', port)
-        httpd = server_class(server_address, handler_class)
-        log_time("Адрес сервера и класс обработчика настроены успешно")
+        logger.info("====== ИНИЦИАЛИЗАЦИЯ SSL ======")
 
-        log_time("Создание SSL контекста...")
-        context = ssl.SSLContext(ssl.PROTOCOL_TLS)
-        context.load_cert_chain(certfile="C:/PythonProect/Pyterochka14853_Bot/ssl/certificate.crt",
-                                keyfile="C:/PythonProect/Pyterochka14853_Bot/ssl/private.key")
-        log_time("SSL контекст создан успешно")
+        # Проверка существования сертификатов
+        if not Path(SSL_CERT).exists():
+            raise FileNotFoundError(f"SSL_CERT не найден: {SSL_CERT}")
+        if not Path(SSL_KEY).exists():
+            raise FileNotFoundError(f"SSL_KEY не найден: {SSL_KEY}")
 
-        log_time("Оборачивание сокета SSL контекстом...")
-        httpd.socket = context.wrap_socket(httpd.socket, server_side=True)
-        log_time("Сокет успешно обернут SSL контекстом")
+        ssl_context = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+        ssl_context.load_cert_chain(SSL_CERT, SSL_KEY)
+        logger.info(f"SSL: Протокол={ssl_context.protocol} | Сертификат={SSL_CERT}")
 
-        log_time('Проверка перед запуском сервера вебхуков с SSL...')
-        log_time(f"Сервер адрес: {server_address}")
-        log_time(f"SSL контекст: {context}")
+        app = web.Application()
+        app.router.add_post(WEBHOOK_PATH, handle_webhook)
+        app["bot"] = bot
+        app["dp"] = dp
 
-        # Запуск сервера вебхуков в отдельном потоке
-        log_time("Запуск потока сервера вебхуков...")
-        thread = threading.Thread(target=run_webhook_server, args=(httpd,))
-        thread.start()
-        log_time("Поток сервера вебхуков запущен")
+        runner = web.AppRunner(app)
+        await runner.setup()
+        site = web.TCPSite(runner, "0.0.0.0", 443, ssl_context=ssl_context)
+        await site.start()
+        logger.info("Сервер запущен: https://0.0.0.0:443")
+
+        while True:
+            await asyncio.sleep(3600)
+
     except Exception as e:
-        log_time(f"Ошибка при запуске: {e}")
-
-def stop_webhook_server(httpd):
-    log_time("Начинаем остановку сервера вебхуков...")
-    try:
-        if httpd:
-            httpd.shutdown()
-            httpd.server_close()
-            log_time('Сервер вебхуков успешно остановлен')
-    except Exception as e:
-        log_time(f"Ошибка при остановке сервера: {e}")
-
-class WebhookHandler(BaseHTTPRequestHandler):
-    def do_GET(self):
-        self.send_response(405)
-        self.end_headers()
-        self.wfile.write(b"Method Not Allowed")
-        log_time("GET request not allowed")
-
-    def do_POST(self):
-        try:
-            log_time("Received POST request")
-            content_length = int(self.headers['Content-Length'])
-            post_data = self.rfile.read(content_length)
-            log_time(f"Received POST data: {post_data}")
-
-            # Логирование заголовков запроса
-            headers = {key: value for key, value in self.headers.items()}
-            log_time(f"Request Headers: {headers}")
-
-            update = Update.de_json(json.loads(post_data), bot)
-
-            if update.message:
-                chat_id = update.message.chat.id
-                message = update.message.text
-                log_time(f"Received message: {message} from chat_id: {chat_id}")
-
-                # Обработка команд асинхронно
-                asyncio.run(self.handle_message(update, message))
-                log_time("Handled message successfully")
-
-            self.send_response(200)
-            self.end_headers()
-            self.wfile.write(b"Webhook received")
-            log_time("Processed POST request successfully")
-        except Exception as e:
-            self.send_response(500)
-            self.end_headers()
-            self.wfile.write(b"Server error")
-            log_time(f"Error in do_POST: {e}")
-
-    @staticmethod
-    async def handle_message(update: Update, message: str):
-        try:
-            log_time(f"Handling message: {message}")
-            if message == '/start':
-                await CommandHandlers.start(update, None)
-            elif message == '/help':
-                await CommandHandlers.help_command(update, None)
-            log_time("Handled command successfully")
-        except Exception as e:
-            log_time(f"Error in handle_message: {e}")
+        logger.critical(f"КРИТИЧЕСКАЯ ОШИБКА: {e}")
+        raise
