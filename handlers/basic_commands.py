@@ -3,6 +3,7 @@ from aiogram import Router, types
 from aiogram.filters import Command
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from aiogram.types import FSInputFile
+from pathlib import Path
 from config.settings import GIF_FOLDER
 from utils.gif_rotator import GifRotator
 from utils.gif_processor import add_weather_to_gif
@@ -38,16 +39,25 @@ def get_rating_keyboard():
     return builder.as_markup(resize_keyboard=True, one_time_keyboard=True)
 
 
+def get_vacancy_keyboard():
+    builder = ReplyKeyboardBuilder()
+    builder.add(types.KeyboardButton(text="🔙 Вернуться"))
+    builder.add(types.KeyboardButton(text="ℹ️ Узнать"))
+    builder.adjust(2)
+    return builder.as_markup(resize_keyboard=True, one_time_keyboard=True)
+
+
 @router.message(Command("start"))
 async def start_handler(message: types.Message):
     try:
+        Path("temp").mkdir(exist_ok=True)
         user = message.from_user
         full_name = f"**{user.first_name} {user.last_name}**" if user.last_name else f"**{user.first_name}**"
 
-        # Обработка гифки с погодой
         gif_path = gif_rotator.get_next_gif()
         output_path = "temp/with_weather.gif"
         weather_data = get_weather()
+
         if "error" in weather_data:
             raise RuntimeError(weather_data["error"])
 
@@ -58,9 +68,8 @@ async def start_handler(message: types.Message):
             caption=f"🛒 Добро пожаловать, {full_name}!",
             parse_mode="Markdown"
         )
-        # Исправление: текстовый разделитель вместо пробела
         await message.answer(
-            text="\u2063",  # Невидимый разделитель (INVISIBLE SEPARATOR)
+            text="\u2063",
             reply_markup=get_main_keyboard()
         )
     except FileNotFoundError:
@@ -81,7 +90,10 @@ async def rating_handler(message: types.Message):
 
 @router.message(lambda message: message.text == "📢 Вакансии")
 async def vacancies_handler(message: types.Message):
-    await message.answer("Раздел в разработке 🛠️")
+    await message.answer(
+        "На данный момент в нашем магазине вакансий нет, но вы можете узнать про вакансии в других магазинах.",
+        reply_markup=get_vacancy_keyboard()
+    )
 
 
 @router.message(lambda message: message.text == "🌐 Официальный сайт")
@@ -107,6 +119,24 @@ async def daily_offer_handler(message: types.Message):
 @router.message(lambda message: message.text == "🆘 Помощь")
 async def help_handler(message: types.Message):
     await message.answer("Контакты поддержки: @support")
+
+
+@router.message(lambda message: message.text == "🔙 Вернуться")
+async def return_handler(message: types.Message):
+    await message.answer(
+        text="Вы вернулись в главное меню:",
+        reply_markup=get_main_keyboard()
+    )
+
+
+@router.message(lambda message: message.text == "ℹ️ Узнать")
+async def vacancy_info_handler(message: types.Message):
+    await message.answer(
+        "Актуальные вакансии в других магазинах:\n"
+        "👉 [Сайт с вакансиями](https://career.x5.ru)",
+        parse_mode="Markdown",
+        disable_web_page_preview=True
+    )
 
 
 @router.message(lambda message: message.text.isdigit() and 0 <= int(message.text) <= 10)
