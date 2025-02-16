@@ -29,5 +29,12 @@ def resize_gifs(input_folder: str, output_subfolder: str = "icon_resized", size:
 if __name__ == "__main__":
     resize_gifs(
         input_folder="C:/PythonProect/Pyterochka14853_Bot/icon",
-        size=(512, 240)
+        size=(320, 320)
     )
+# Telegram рекомендует следующие стандарты для анимаций (гифок):
+#
+# Ширина: 320–512 пикселей.
+#
+# Высота: 240–320 пикселей.
+#
+# Соотношение сторон: 4:3 или 16:9.

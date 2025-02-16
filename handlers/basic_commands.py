@@ -5,9 +5,10 @@ from aiogram import Router, types
 from aiogram.filters import Command
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from aiogram.types import FSInputFile
-from aiogram.exceptions import TelegramRetryAfter
 from config.settings import GIF_FOLDER
 from utils.gif_rotator import GifRotator
+from utils.gif_processor import add_weather_widget
+from services.weather import get_weather
 from pathlib import Path
 
 logger = logging.getLogger(__name__)
@@ -34,32 +35,33 @@ def get_rating_keyboard():
 @router.message(Command("start"))
 async def start_handler(message: types.Message):
     try:
-        user_name = message.from_user.first_name
-        gif_path = gif_rotator.get_next_gif()
+        # Получаем данные о погоде
+        weather_data = get_weather()
+        if "error" in weather_data:
+            raise RuntimeError(weather_data["error"])
 
-        if not Path(gif_path).exists():
-            raise FileNotFoundError(f"Файл не найден: {gif_path}")
+        # Обрабатываем гифку с виджетом погоды
+        gif_path = gif_rotator.get_next_gif()
+        output_path = "temp/with_weather.gif"
+        add_weather_widget(gif_path, output_path, weather_data)
 
         # Отправляем гифку
-        await message.answer_animation(FSInputFile(gif_path))
+        await message.answer_animation(FSInputFile(output_path))
 
-        # Увеличиваем задержку до 2 секунд
-        await asyncio.sleep(2)
+        # Задержка для избежания Flood Control
+        await asyncio.sleep(1)
 
         # Отправляем сообщение с клавиатурой
         await message.answer(
-            f"Привет, {user_name}! Выберите действие:",
+            f"Привет, {message.from_user.first_name}! Выберите действие:",
             reply_markup=get_main_keyboard()
         )
-    except TelegramRetryAfter as e:
-        logger.warning(f"Flood Control: {e}")
-        await message.answer(f"Слишком частые запросы. Попробуйте через {e.retry_after} секунд.")
-    except FileNotFoundError as e:
-        logger.error(f"Ошибка: {str(e)}")
-        await message.answer("Ошибка: файл гифки не найден.")
     except Exception as e:
-        logger.critical(f"Критическая ошибка: {traceback.format_exc()}")
-        await message.answer("Произошла внутренняя ошибка. Пожалуйста, свяжитесь с поддержкой.")
+        logger.error(f"Ошибка: {traceback.format_exc()}")
+        await message.answer("Произошла ошибка. Пожалуйста, попробуйте позже.")
+
+
+# Остальные обработчики без изменений...
 
 @router.message(lambda message: message.text == "⭐ Рейтинг")
 async def rating_handler(message: types.Message):
