@@ -16,6 +16,6 @@ WEBHOOK_PATH = "/webhook"
 GIF_FOLDER = "C:/PythonProect/Pyterochka14853_Bot/icon/icon_resized"
 
 # Настройки для погодного API
-WEATHER_API_KEY = "6ad960356f57881e23db4e8064410c2f"  # Получите на openweathermap.org
+WEATHER_API_KEY = ""  # Получите на openweathermap.org
 WEATHER_CITY = "Krasnodar,ru"  # Пример: Пятерочка в Москве
 WEATHER_ICON_URL = "http://openweathermap.org/img/wn/{icon}@2x.png"  # URL для иконок

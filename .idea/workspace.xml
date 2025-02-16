@@ -4,14 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8c56b6b8-a272-4f40-81c0-15347dd20bd9" name="Changes" comment="gif recize warning keyboard">
-      <change afterPath="$PROJECT_DIR$/services/weather.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/utils/gif_processor.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/basic_commands.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/basic_commands.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/resize_gifs.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/resize_gifs.py" afterDir="false" />
-    </list>
+    <list default="true" id="8c56b6b8-a272-4f40-81c0-15347dd20bd9" name="Changes" comment="API openweathermap.org connect" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -135,7 +128,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739710257422</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="API openweathermap.org connect">
+      <option name="closed" value="true" />
+      <created>1739716124472</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1739716124472</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -158,7 +159,8 @@
     <MESSAGE value="colorlog" />
     <MESSAGE value="gif start" />
     <MESSAGE value="gif recize warning keyboard" />
-    <option name="LAST_COMMIT_MESSAGE" value="gif recize warning keyboard" />
+    <MESSAGE value="API openweathermap.org connect" />
+    <option name="LAST_COMMIT_MESSAGE" value="API openweathermap.org connect" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$server.coverage" NAME="server Coverage Results" MODIFIED="1738496046843" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
