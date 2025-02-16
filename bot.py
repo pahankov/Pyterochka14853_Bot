@@ -14,23 +14,20 @@ async def main():
         logger.info("=" * 50)
         logger.info("████████ БОТ ЗАПУЩЕН ████████")
 
-        # Инициализация бота и диспетчера
         bot = Bot(token=BOT_TOKEN)
         dp = Dispatcher()
         dp.include_router(basic_commands.router)
 
-        # Установка вебхука
         await bot.delete_webhook()
         await bot.set_webhook(
             url=f"{WEBHOOK_HOST}{WEBHOOK_PATH}",
             certificate=FSInputFile(SSL_CERT)
         )
 
-        # Запуск сервера
         await run_server(bot, dp)
 
-    except Exception as e:
-        logger.critical(f"ФАТАЛЬНАЯ ОШИБКА: {str(e)}")
+    except Exception as main_error:
+        logger.critical(f"ФАТАЛЬНАЯ ОШИБКА: {main_error}")
         raise
 
 if __name__ == "__main__":
@@ -38,6 +35,5 @@ if __name__ == "__main__":
         asyncio.run(main())
     except KeyboardInterrupt:
         logger.info("Остановка по Ctrl+C")
-    except Exception as e:
-        logger.critical(f"НЕОБРАБОТАННОЕ ИСКЛЮЧЕНИЕ: {str(e)}")
-        
+    except Exception as global_error:
+        logger.critical(f"НЕОБРАБОТАННОЕ ИСКЛЮЧЕНИЕ: {global_error}")

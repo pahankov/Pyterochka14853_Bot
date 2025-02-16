@@ -1,51 +1,61 @@
 from PIL import Image, ImageSequence, ImageDraw, ImageFont
-from pathlib import Path
-import requests
 from io import BytesIO
+import requests
+import logging
+
+logger = logging.getLogger(__name__)
 
 
-def add_weather_widget(gif_path: str, output_path: str, weather_data: dict):
-    """
-    Добавляет виджет погоды справа от гифки.
-    """
-    with Image.open(gif_path) as im:
-        # Создаем холст: ширина гифки + 200px под виджет
-        new_width = im.width + 200
-        new_height = im.height
+def add_weather_to_gif(gif_path: str, output_path: str, weather_data: dict):
+    """Склеивает гифку с виджетом погоды."""
+    try:
+        with Image.open(gif_path) as im:
+            # Уменьшаем гифку в 2 раза
+            new_width = im.width // 2
+            new_height = im.height // 2
+            im = im.resize((new_width, new_height))
 
-        frames = []
-        font = ImageFont.truetype("arial.ttf", 20)
+            # Загружаем иконку
+            icon_url = weather_data["icon_url"]
+            icon_response = requests.get(icon_url, timeout=10)
+            icon = Image.open(BytesIO(icon_response.content))
+            icon = icon.resize((50, 50))
 
-        # Загружаем иконку погоды
-        icon_response = requests.get(weather_data["icon_url"])
-        icon = Image.open(BytesIO(icon_response.content))
+            # Создаем холст
+            widget_width = 100
+            canvas_width = im.width + widget_width
+            canvas_height = max(im.height, 100)
 
-        for frame in ImageSequence.Iterator(im):
-            # Создаем новое изображение
-            canvas = Image.new("RGBA", (new_width, new_height), (255, 255, 255))
-            canvas.paste(frame, (0, 0))
+            frames = []
+            font = ImageFont.truetype("arial.ttf", 14)
+            min_duration = 50  # Минимальная длительность кадра (50 мс)
 
-            # Вставляем иконку
-            canvas.paste(icon, (im.width + 10, 10), icon)
+            for frame in ImageSequence.Iterator(im):
+                duration = max(frame.info.get('duration', 100), min_duration)
+                canvas = Image.new("RGB", (canvas_width, canvas_height), (255, 255, 255))
+                canvas.paste(frame, (0, 0))
+                canvas.paste(icon, (im.width + 10, 10))
 
-            # Рисуем текст
-            draw = ImageDraw.Draw(canvas)
-            draw.text(
-                (im.width + 10, icon.height + 20),
-                f"Погода в Пятерочке:\n{weather_data['temp']}°C\n{weather_data['description']}",
-                fill=(0, 0, 0),
-                font=font
+                # Текст погоды
+                draw = ImageDraw.Draw(canvas)
+                text = (
+                    f"Погода вокруг Пятёрочки:\n"
+                    f"🌡️ {weather_data['temp']}°C\n"
+                    f"🌤️ {weather_data['description'].capitalize()}"
+                )
+                draw.text((im.width + 10, 60), text, fill=(0, 0, 0), font=font)
+
+                frames.append((canvas, duration))
+
+            # Сохраняем гифку
+            frames[0][0].save(
+                output_path,
+                save_all=True,
+                append_images=[frame[0] for frame in frames[1:]],
+                duration=[frame[1] for frame in frames],
+                loop=0,
+                optimize=True
             )
-
-            frames.append(canvas)
-
-        # Сохраняем
-        frames[0].save(
-            output_path,
-            save_all=True,
-            append_images=frames[1:],
-            loop=0,
-            duration=im.info['duration'],
-            disposal=2
-        )
-        
+    except Exception as e:
+        logger.error(f"Ошибка обработки гифки: {e}")
+        raise RuntimeError("Не удалось создать гифку с погодой")
