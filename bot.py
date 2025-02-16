@@ -18,22 +18,15 @@ async def main():
         bot = Bot(token=BOT_TOKEN)
         dp = Dispatcher()
         dp.include_router(basic_commands.router)
-        logger.info(f"Бот инициализирован | Токен: {BOT_TOKEN[:5]}***")
 
         # Установка вебхука
-        logger.info("Удаление старого вебхука...")
         await bot.delete_webhook()
-        logger.info("Старый вебхук удален")
-
-        logger.info(f"Установка нового вебхука: {WEBHOOK_HOST}{WEBHOOK_PATH}")
         await bot.set_webhook(
             url=f"{WEBHOOK_HOST}{WEBHOOK_PATH}",
-            certificate=FSInputFile(SSL_CERT)  # Используем сертификат
+            certificate=FSInputFile(SSL_CERT)
         )
-        logger.info("Вебхук успешно установлен")
 
         # Запуск сервера
-        logger.info("Запуск вебхук-сервера...")
         await run_server(bot, dp)
 
     except Exception as e:
@@ -47,3 +40,4 @@ if __name__ == "__main__":
         logger.info("Остановка по Ctrl+C")
     except Exception as e:
         logger.critical(f"НЕОБРАБОТАННОЕ ИСКЛЮЧЕНИЕ: {str(e)}")
+        

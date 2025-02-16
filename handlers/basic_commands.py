@@ -4,11 +4,18 @@ from aiogram import Router, types
 from aiogram.filters import Command
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from aiogram.exceptions import TelegramBadRequest
+from aiogram.types import FSInputFile
+from config.settings import GIF_FOLDER
+from utils.gif_rotator import GifRotator
+from pathlib import Path
 
 # Инициализация логгера
 logger = logging.getLogger(__name__)
 
 router = Router()
+
+# Инициализация ротатора гифок
+gif_rotator = GifRotator(GIF_FOLDER)
 
 # Главное меню с кнопками
 def get_main_keyboard():
@@ -22,10 +29,26 @@ def get_main_keyboard():
 @router.message(Command("start"))
 async def start_handler(message: types.Message):
     try:
+        # Получаем следующую гифку
+        gif_path = gif_rotator.get_next_gif()
+        logger.info(f"Попытка отправить гифку: {gif_path}")
+
+        # Проверяем, существует ли файл
+        if not Path(gif_path).exists():
+            raise FileNotFoundError(f"Файл не найден: {gif_path}")
+
+        # Отправка гифки
+        gif = FSInputFile(gif_path)
+        await message.answer_animation(gif)
+
+        # Отправка приветственного сообщения
         await message.answer(
             "Привет! Я ваш бот. Выберите действие:",
             reply_markup=get_main_keyboard()
         )
+    except FileNotFoundError as e:
+        logger.error(f"Ошибка: {str(e)}")
+        await message.answer("Ошибка: файл гифки не найден.")
     except TelegramBadRequest as e:
         logger.error(f"Ошибка Telegram API: {str(e)}")
         await message.answer("Произошла ошибка. Пожалуйста, попробуйте позже.")

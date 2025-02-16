@@ -80,3 +80,4 @@ async def run_server(bot: Bot, dp: Dispatcher):
     except Exception as e:
         logger.critical(f"КРИТИЧЕСКАЯ ОШИБКА:\n{e}")
         raise
+    
