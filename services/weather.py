@@ -1,28 +1,42 @@
 import requests
 import logging
+from datetime import datetime
 from config.settings import WEATHER_API_KEY, WEATHER_LAT, WEATHER_LON, WEATHER_ICON_URL
 
 logger = logging.getLogger(__name__)
 
 
 def get_weather() -> dict:
-    """Возвращает данные о погоде."""
-    url = f"https://api.openweathermap.org/data/2.5/weather?lat={WEATHER_LAT}&lon={WEATHER_LON}&appid={WEATHER_API_KEY}&units=metric&lang=ru"
+    """Возвращает текущую погоду и прогноз на 3 часа."""
     try:
-        response = requests.get(url)
-        response.raise_for_status()
-        data = response.json()
-        logger.debug(f"Данные погоды: {data}")
+        # Текущая погода
+        current_url = f"https://api.openweathermap.org/data/2.5/weather?lat={WEATHER_LAT}&lon={WEATHER_LON}&appid={WEATHER_API_KEY}&units=metric&lang=ru"
+        current_response = requests.get(current_url)
+        current_response.raise_for_status()
+        current_data = current_response.json()
 
+        # Прогноз
+        forecast_url = f"https://api.openweathermap.org/data/2.5/forecast?lat={WEATHER_LAT}&lon={WEATHER_LON}&appid={WEATHER_API_KEY}&units=metric&lang=ru&cnt=4"
+        forecast_response = requests.get(forecast_url)
+        forecast_response.raise_for_status()
+        forecast_data = forecast_response.json()
+
+        # Форматирование данных
         return {
-            "temp": data["main"]["temp"],
-            "description": data["weather"][0]["description"],
-            "icon_url": WEATHER_ICON_URL.format(icon=data["weather"][0]["icon"]),
-            "address": "📍 Пятерочка, ул. Примерная, 123"
+            "current": {
+                "temp": current_data["main"]["temp"],
+                "description": current_data["weather"][0]["description"],
+                "icon": current_data["weather"][0]["icon"]
+            },
+            "forecast": [
+                {
+                    "time": datetime.fromtimestamp(item["dt"]).strftime("%H:%M"),
+                    "temp": item["main"]["temp"],
+                    "icon": item["weather"][0]["icon"]
+                } for item in forecast_data["list"][1:4]  # Следующие 3 часа
+            ]
         }
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Ошибка запроса: {e}")
+
+    except Exception as e:
+        logger.error(f"Ошибка запроса погоды: {str(e)}")
         return {"error": str(e)}
-    except (KeyError, IndexError) as e:
-        logger.error(f"Ошибка парсинга данных: {e}")
-        return {"error": "Неверный формат данных"}

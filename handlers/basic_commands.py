@@ -6,8 +6,8 @@ from pathlib import Path
 from config.settings import GIF_FOLDER
 from utils.gif_rotator import GifRotator
 from utils.gif_processor import add_weather_to_gif
-from services.weather import get_weather
 from .keyboards import get_main_keyboard, get_rating_keyboard
+from services.weather import get_weather  # Используем новую версию
 
 logger = logging.getLogger(__name__)
 router = Router()

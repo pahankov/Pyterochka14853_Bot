@@ -2,60 +2,99 @@ from PIL import Image, ImageSequence, ImageDraw, ImageFont
 from io import BytesIO
 import requests
 import logging
+from config.settings import WEATHER_ICON_URL
 
 logger = logging.getLogger(__name__)
 
 
 def add_weather_to_gif(gif_path: str, output_path: str, weather_data: dict):
-    """Склеивает гифку с виджетом погоды."""
+    """Добавляет виджет погоды к гифке с сохранением анимации."""
     try:
+        # Проверка структуры данных
+        if "error" in weather_data:
+            raise RuntimeError(weather_data["error"])
+
+        current = weather_data.get("current", {})
+        forecast = weather_data.get("forecast", [])
+
         with Image.open(gif_path) as im:
-            # Уменьшаем гифку в 2 раза
-            new_width = im.width // 2
-            new_height = im.height // 2
-            im = im.resize((new_width, new_height))
+            # Размеры оригинала
+            orig_width, orig_height = im.size
 
-            # Загружаем иконку
-            icon_url = weather_data["icon_url"]
-            icon_response = requests.get(icon_url, timeout=10)
-            icon = Image.open(BytesIO(icon_response.content))
-            icon = icon.resize((50, 50))
+            # Новый размер (сохраняем пропорции)
+            scale_factor = 0.5
+            new_width = int(orig_width * scale_factor)
+            new_height = int(orig_height * scale_factor)
 
-            # Создаем холст
-            widget_width = 100
-            canvas_width = im.width + widget_width
-            canvas_height = max(im.height, 100)
+            # Загрузка иконок
+            icons = []
+            try:
+                # Текущая погода
+                icon_url = WEATHER_ICON_URL.format(icon=current.get("icon", ""))
+                response = requests.get(icon_url)
+                icons.append(Image.open(BytesIO(response.content)).resize((40, 40)))
+
+                # Прогноз
+                for item in forecast[:3]:
+                    icon_url = WEATHER_ICON_URL.format(icon=item.get("icon", ""))
+                    response = requests.get(icon_url)
+                    icons.append(Image.open(BytesIO(response.content)).resize((40, 40)))
+            except Exception as e:
+                logger.error(f"Ошибка загрузки иконок: {str(e)}")
+                raise RuntimeError("Ошибка загрузки иконок погоды")
+
+            # Параметры виджета
+            widget_width = 200
+            canvas_width = new_width + widget_width
+            canvas_height = max(new_height, 150)  # Минимальная высота виджета
 
             frames = []
             font = ImageFont.truetype("arial.ttf", 14)
-            min_duration = 50  # Минимальная длительность кадра (50 мс)
 
             for frame in ImageSequence.Iterator(im):
-                duration = max(frame.info.get('duration', 100), min_duration)
-                canvas = Image.new("RGB", (canvas_width, canvas_height), (255, 255, 255))
-                canvas.paste(frame, (0, 0))
-                canvas.paste(icon, (im.width + 10, 10))
+                # Ресайз кадра
+                resized_frame = frame.resize((new_width, new_height))
 
-                # Текст погоды
+                # Создание холста
+                canvas = Image.new("RGBA", (canvas_width, canvas_height), (255, 255, 255, 0))
+                canvas.paste(resized_frame, (0, 0))
+
+                # Рисуем виджет
                 draw = ImageDraw.Draw(canvas)
-                text = (
-                    f"Погода вокруг Пятёрочки:\n"
-                    f"🌡️ {weather_data['temp']}°C\n"
-                    f"🌤️ {weather_data['description'].capitalize()}"
-                )
-                draw.text((im.width + 10, 60), text, fill=(0, 0, 0), font=font)
 
-                frames.append((canvas, duration))
+                # Текущая погода
+                y_position = 10
+                canvas.paste(icons[0], (new_width + 10, y_position))
+                draw.text((new_width + 60, y_position + 5),
+                          f"{current.get('temp', 'N/A')}°C\n{current.get('description', '').capitalize()}",
+                          font=font, fill=(0, 0, 0))
 
-            # Сохраняем гифку
-            frames[0][0].save(
+                # Прогноз
+                y_position += 70
+                draw.text((new_width + 10, y_position), "Прогноз:", font=font, fill=(0, 0, 0))
+                y_position += 20
+
+                for i, item in enumerate(forecast[:3]):
+                    if i + 1 >= len(icons): break
+                    canvas.paste(icons[i + 1], (new_width + 10, y_position))
+                    draw.text((new_width + 60, y_position + 5),
+                              f"{item.get('time', '')} | {item.get('temp', 'N/A')}°C",
+                              font=font, fill=(0, 0, 0))
+                    y_position += 50
+
+                frames.append(canvas.convert("P"))
+
+            # Сохранение с параметрами анимации
+            frames[0].save(
                 output_path,
                 save_all=True,
-                append_images=[frame[0] for frame in frames[1:]],
-                duration=[frame[1] for frame in frames],
+                append_images=frames[1:],
+                duration=im.info.get('duration', 100),
                 loop=0,
-                optimize=True
+                optimize=True,
+                disposal=2
             )
+
     except Exception as e:
-        logger.error(f"Ошибка обработки гифки: {e}")
-        raise RuntimeError("Не удалось создать гифку с погодой")
+        logger.error(f"Ошибка обработки гифки: {str(e)}")
+        raise RuntimeError("Не удалось создать гифку")
