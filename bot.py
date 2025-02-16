@@ -1,8 +1,9 @@
+# Файл bot.py
 import asyncio
 from aiogram import Bot, Dispatcher
 from aiogram.types import FSInputFile
 from config.settings import BOT_TOKEN, WEBHOOK_HOST, WEBHOOK_PATH, SSL_CERT
-from handlers import basic_commands
+from handlers import routers  # Импортируем список роутеров
 from server.server_logger import setup_logger
 from server.webhook_server import run_server
 
@@ -16,7 +17,10 @@ async def main():
 
         bot = Bot(token=BOT_TOKEN)
         dp = Dispatcher()
-        dp.include_router(basic_commands.router)
+
+        # Регистрируем все роутеры
+        for router in routers:
+            dp.include_router(router)  # Важно: передаем сам роутер, а не список
 
         await bot.delete_webhook()
         await bot.set_webhook(

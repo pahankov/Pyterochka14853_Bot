@@ -1,50 +1,17 @@
 import logging
 from aiogram import Router, types
 from aiogram.filters import Command
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from aiogram.types import FSInputFile
 from pathlib import Path
 from config.settings import GIF_FOLDER
 from utils.gif_rotator import GifRotator
 from utils.gif_processor import add_weather_to_gif
 from services.weather import get_weather
+from .keyboards import get_main_keyboard, get_rating_keyboard
 
 logger = logging.getLogger(__name__)
 router = Router()
 gif_rotator = GifRotator(GIF_FOLDER)
-
-
-def get_main_keyboard():
-    builder = ReplyKeyboardBuilder()
-    buttons = [
-        "⭐ Оцените нас",
-        "📢 Вакансии",
-        "🌐 Официальный сайт",
-        "📞 Связь с администрацией",
-        "📖 Рецепты",
-        "🎁 Предложение дня",
-        "🆘 Помощь"
-    ]
-    for text in buttons:
-        builder.add(types.KeyboardButton(text=text))
-    builder.adjust(2, 2, 2)
-    return builder.as_markup(resize_keyboard=True)
-
-
-def get_rating_keyboard():
-    builder = ReplyKeyboardBuilder()
-    for i in range(11):
-        builder.add(types.KeyboardButton(text=str(i)))
-    builder.adjust(5)
-    return builder.as_markup(resize_keyboard=True, one_time_keyboard=True)
-
-
-def get_vacancy_keyboard():
-    builder = ReplyKeyboardBuilder()
-    builder.add(types.KeyboardButton(text="🔙 Вернуться"))
-    builder.add(types.KeyboardButton(text="ℹ️ Узнать"))
-    builder.adjust(2)
-    return builder.as_markup(resize_keyboard=True, one_time_keyboard=True)
 
 
 @router.message(Command("start"))
@@ -78,22 +45,9 @@ async def start_handler(message: types.Message):
     except RuntimeError as e:
         logger.error(f"Ошибка обработки: {e}")
         await message.answer("🚨 Ошибка при создании гифки.")
-    except Exception:
-        logger.error("Критическая ошибка", exc_info=True)
+    except Exception as e:
+        logger.error(f"Критическая ошибка: {str(e)}", exc_info=True)
         await message.answer("🚨 Произошла внутренняя ошибка.")
-
-
-@router.message(lambda message: message.text == "⭐ Оцените нас")
-async def rating_handler(message: types.Message):
-    await message.answer("Оцените нас от 0 до 10:", reply_markup=get_rating_keyboard())
-
-
-@router.message(lambda message: message.text == "📢 Вакансии")
-async def vacancies_handler(message: types.Message):
-    await message.answer(
-        "На данный момент в нашем магазине вакансий нет, но вы можете узнать про вакансии в других магазинах.",
-        reply_markup=get_vacancy_keyboard()
-    )
 
 
 @router.message(lambda message: message.text == "🌐 Официальный сайт")
@@ -121,28 +75,12 @@ async def help_handler(message: types.Message):
     await message.answer("Контакты поддержки: @support")
 
 
-@router.message(lambda message: message.text == "🔙 Вернуться")
-async def return_handler(message: types.Message):
+@router.message(lambda message: message.text == "⭐ Оцените нас")
+async def rating_handler(message: types.Message):
     await message.answer(
-        text="Вы вернулись в главное меню:",
-        reply_markup=get_main_keyboard()
+        "Оцените нас от 0 до 10:",
+        reply_markup=get_rating_keyboard()
     )
-
-
-@router.message(lambda message: message.text == "ℹ️ Узнать")
-async def vacancy_info_handler(message: types.Message):
-    await message.answer(
-        "Актуальные вакансии в других магазинах:\n"
-        "👉 [Сайт с вакансиями](https://career.x5.ru)",
-        parse_mode="Markdown",
-        disable_web_page_preview=True
-    )
-
-
-@router.message(lambda message: message.text.isdigit() and 0 <= int(message.text) <= 10)
-async def process_rating(message: types.Message):
-    rating = message.text
-    await message.answer(f"Спасибо за оценку {rating}!", reply_markup=get_main_keyboard())
 
 
 @router.message()
