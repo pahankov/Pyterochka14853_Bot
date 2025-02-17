@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8c56b6b8-a272-4f40-81c0-15347dd20bd9" name="Changes" comment="keyboard restruction">
+    <list default="true" id="8c56b6b8-a272-4f40-81c0-15347dd20bd9" name="Changes" comment="run">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/handlers/basic_commands.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/basic_commands.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/services/weather.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/weather.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/utils/gif_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/gif_processor.py" afterDir="false" />
@@ -64,6 +66,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "git-widget-placeholder": "main",
     "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/PythonProect/InlineKeyboard",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -93,7 +96,8 @@
       <workItem from="1738436720287" duration="3705000" />
       <workItem from="1738443608693" duration="47755000" />
       <workItem from="1739097683832" duration="1498000" />
-      <workItem from="1739723640858" duration="11325000" />
+      <workItem from="1739723640858" duration="19645000" />
+      <workItem from="1739815054027" duration="893000" />
     </task>
     <task id="LOCAL-00001" summary="New structure">
       <option name="closed" value="true" />
@@ -175,7 +179,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739737799583</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="run">
+      <option name="closed" value="true" />
+      <created>1739739162641</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1739739162641</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -203,13 +215,14 @@
     <MESSAGE value="keyboard and..." />
     <MESSAGE value="vacantion" />
     <MESSAGE value="keyboard restruction" />
-    <option name="LAST_COMMIT_MESSAGE" value="keyboard restruction" />
+    <MESSAGE value="run" />
+    <option name="LAST_COMMIT_MESSAGE" value="run" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$server.coverage" NAME="server Coverage Results" MODIFIED="1738496046843" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$webhook_monitor.coverage" NAME="webhook_monitor Coverage Results" MODIFIED="1738518865395" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$basic_commands.coverage" NAME="basic_commands Coverage Results" MODIFIED="1739735766054" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/handlers" />
-    <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$bot.coverage" NAME="bot Coverage Results" MODIFIED="1739738913307" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$bot.coverage" NAME="bot Coverage Results" MODIFIED="1739815307336" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$resize_gifs.coverage" NAME="resize_gifs Coverage Results" MODIFIED="1739738530988" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$webhook_handler.coverage" NAME="webhook_handler Coverage Results" MODIFIED="1738448371768" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$publish_cloudpub.coverage" NAME="publish_cloudpub Coverage Results" MODIFIED="1738512356834" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />

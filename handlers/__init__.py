@@ -5,7 +5,7 @@ from .rating_handlers import router as rating_router
 routers = [
     vacancy_router,
     rating_router,
-    basic_router  # Обработчик unknown_message должен быть последним
+    basic_router
 ]
 
 __all__ = ["routers"]
