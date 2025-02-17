@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 def add_weather_to_gif(gif_path: str, output_path: str, weather_data: dict):
-    """Добавляет виджет погоды к гифке."""
+    """Добавляет виджет погоды к гифке с сохранением анимации."""
     try:
         if "error" in weather_data:
             raise RuntimeError(weather_data["error"])
@@ -33,7 +33,7 @@ def add_weather_to_gif(gif_path: str, output_path: str, weather_data: dict):
                 response = requests.get(icon_url)
                 icons.append(Image.open(BytesIO(response.content)).resize((40, 40)))
 
-            # Создание холста
+            # Параметры виджета
             widget_width = 200
             canvas_width = new_width + widget_width
             canvas_height = max(new_height, 200)

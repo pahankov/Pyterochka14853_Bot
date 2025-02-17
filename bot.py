@@ -8,8 +8,8 @@ from server.webhook_server import run_server
 
 logger = setup_logger("telegram_bot")
 
+
 async def main():
-    """Основная функция запуска бота."""
     try:
         bot = Bot(token=BOT_TOKEN)
         dp = Dispatcher()
@@ -25,20 +25,17 @@ async def main():
             certificate=FSInputFile(SSL_CERT)
         )
 
-        # Финальное сообщение о запуске
+        # Запуск сервера
+        await run_server(bot, dp)
+
+        # Логирование после успешного запуска
         logger.info("=" * 50)
         logger.info("████████ БОТ ЗАПУЩЕН ████████")
 
-        await run_server(bot, dp)
-
-    except Exception as main_error:
-        logger.critical(f"ФАТАЛЬНАЯ ОШИБКА: {main_error}", exc_info=True)
+    except Exception as e:
+        logger.critical(f"Ошибка: {str(e)}", exc_info=True)
         raise
 
+
 if __name__ == "__main__":
-    try:
-        asyncio.run(main())
-    except KeyboardInterrupt:
-        logger.info("Остановка по Ctrl+C")
-    except Exception as global_error:
-        logger.critical(f"НЕОБРАБОТАННОЕ ИСКЛЮЧЕНИЕ: {global_error}", exc_info=True)
+    asyncio.run(main())

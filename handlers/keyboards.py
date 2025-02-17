@@ -1,32 +1,27 @@
-from aiogram.utils.keyboard import ReplyKeyboardBuilder
-from aiogram import types
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
-def get_main_keyboard():
-    builder = ReplyKeyboardBuilder()
+def get_main_inline_keyboard():
+    builder = InlineKeyboardBuilder()
     buttons = [
-        "⭐ Оцените нас",
-        "📢 Вакансии",
-        "🌐 Официальный сайт",
-        "📞 Связь с администрацией",
-        "📖 Рецепты",
-        "🎁 Предложение дня",
-        "🆘 Помощь"
+        ("⭐ Оценить", "rate"),
+        ("📢 Вакансии", "vacancies"),
+        ("🌐 Сайт", "https://www.x5.ru"),
+        ("📞 Связь", "contact"),
+        ("🎁 Предложение дня", "daily_offer"),
+        ("📖 Рецепты", "recipes"),
+        ("🆘 Помощь", "help")
     ]
-    for text in buttons:
-        builder.add(types.KeyboardButton(text=text))
-    builder.adjust(2, 2, 2)
-    return builder.as_markup(resize_keyboard=True)
+    for text, data in buttons:
+        if data.startswith("http"):
+            builder.button(text=text, url=data)
+        else:
+            builder.button(text=text, callback_data=data)
+    builder.adjust(2, 2, 2, 1)
+    return builder.as_markup()
 
-def get_rating_keyboard():
-    builder = ReplyKeyboardBuilder()
-    for i in range(11):
-        builder.add(types.KeyboardButton(text=str(i)))
-    builder.adjust(5)
-    return builder.as_markup(resize_keyboard=True, one_time_keyboard=True)
-
-def get_vacancy_keyboard():
-    builder = ReplyKeyboardBuilder()
-    builder.add(types.KeyboardButton(text="🔙 Назад"))
-    builder.add(types.KeyboardButton(text="ℹ️ Узнать"))
+def get_vacancy_inline_keyboard():  # Добавлена функция
+    builder = InlineKeyboardBuilder()
+    builder.button(text="🔙 Назад", callback_data="back")
+    builder.button(text="ℹ️ Узнать", url="https://career.x5.ru")
     builder.adjust(2)
-    return builder.as_markup(resize_keyboard=True, one_time_keyboard=True)
+    return builder.as_markup()
