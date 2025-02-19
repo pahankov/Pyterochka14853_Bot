@@ -9,13 +9,19 @@ logger = setup_logger("webhook_server")
 
 async def handle_webhook(request: web.Request):
     try:
-        client_ip = request.remote
-        logger.info(f"Запрос от IP: {client_ip}")
-
-        # Только основные данные
         data = await request.json()
-        chat_id = data["message"]["chat"]["id"]
-        logger.info(f"Обработка команды от chat_id={chat_id}")
+        logger.info(f"Получено обновление: {data}")
+
+        # Определяем тип обновления (сообщение или колбэк)
+        if "message" in data:
+            chat_id = data["message"]["chat"]["id"]
+            logger.info(f"Обработка сообщения от chat_id={chat_id}")
+        elif "callback_query" in data:
+            chat_id = data["callback_query"]["message"]["chat"]["id"]
+            logger.info(f"Обработка колбэка от chat_id={chat_id}")
+        else:
+            logger.error("Неизвестный тип обновления")
+            return web.Response(status=400)
 
         # Передаем данные в диспетчер
         bot = request.app["bot"]
@@ -23,9 +29,8 @@ async def handle_webhook(request: web.Request):
         await dp.feed_webhook_update(bot, data)
 
         return web.Response(text="OK")
-
     except Exception as e:
-        logger.error(f"Ошибка: {str(e)}")
+        logger.error(f"Ошибка: {str(e)}", exc_info=True)
         return web.Response(status=500)
 
 async def run_server(bot: Bot, dp: Dispatcher):
@@ -52,6 +57,8 @@ async def run_server(bot: Bot, dp: Dispatcher):
         site = web.TCPSite(runner, "0.0.0.0", 443, ssl_context=ssl_context)
         await site.start()
         logger.info("Сервер запущен на https://0.0.0.0:443")
+        logger.info("=" * 50)
+        logger.info("████████ БОТ ЗАПУЩЕН ████████")  # Лог здесь
 
         # Бесконечный цикл для поддержания работы сервера
         while True:

@@ -1,6 +1,7 @@
 from aiogram.utils.keyboard import InlineKeyboardBuilder
+from aiogram.types import InlineKeyboardMarkup
 
-def get_main_inline_keyboard():
+def get_main_inline_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     buttons = [
         ("⭐ Оценить", "rate"),
@@ -19,7 +20,7 @@ def get_main_inline_keyboard():
     builder.adjust(2, 2, 2, 1)
     return builder.as_markup()
 
-def get_vacancy_inline_keyboard():  # Добавлена функция
+def get_vacancy_inline_keyboard() -> InlineKeyboardMarkup:
     builder = InlineKeyboardBuilder()
     builder.button(text="🔙 Назад", callback_data="back")
     builder.button(text="ℹ️ Узнать", url="https://career.x5.ru")
