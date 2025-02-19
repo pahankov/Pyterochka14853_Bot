@@ -6,11 +6,13 @@ setup(
     packages=find_packages(include=["*"]),
     install_requires=[
         "aiogram==3.2.0",
-        "aiohttp==3.9.0",  # Совместимая версия с aiogram
+        "aiohttp==3.9.0",
         "python-dotenv==1.0.0",
         "requests==2.32.3",
         "colorlog==6.8.2",
-        "Pillow==10.3.0"
+        "Pillow==10.3.0",
+        "imageio==2.34.0",  # Добавлено
+        "numpy==1.26.4"     # Добавлено
     ],
     extras_require={
         "dev": [
