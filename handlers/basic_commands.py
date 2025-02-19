@@ -1,5 +1,5 @@
 import logging
-from aiogram import Router, types, F
+from aiogram import Router, types
 from aiogram.filters import Command
 from aiogram.types import FSInputFile
 from pathlib import Path
@@ -44,3 +44,4 @@ async def start_handler(message: types.Message):
     except Exception as e:
         logger.error(f"Ошибка: {str(e)}", exc_info=True)
         await message.answer("🚨 Произошла ошибка.")
+

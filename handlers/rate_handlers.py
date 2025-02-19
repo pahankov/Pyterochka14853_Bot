@@ -17,3 +17,4 @@ async def process_rating(callback: types.CallbackQuery):
     rating = callback.data.split("_")[1]
     await callback.message.answer(f"Спасибо за оценку {rating}! 🌟")
     await callback.answer()
+

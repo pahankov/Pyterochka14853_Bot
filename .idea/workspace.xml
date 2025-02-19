@@ -4,16 +4,24 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8c56b6b8-a272-4f40-81c0-15347dd20bd9" name="Changes" comment="intermediate inline">
-      <change afterPath="$PROJECT_DIR$/handlers/callbacks.py" afterDir="false" />
+    <list default="true" id="8c56b6b8-a272-4f40-81c0-15347dd20bd9" name="Changes" comment="inline run!">
+      <change afterPath="$PROJECT_DIR$/server/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/services/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/setup.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/__init__.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/conftest.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_gif_processor.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_gif_rotator.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_handlers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_image_storage.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_vacancy_handlers.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_weather.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/tests/test_webhook_server.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/utils/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/bot.py" beforeDir="false" afterPath="$PROJECT_DIR$/bot.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/__init__.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/handlers/basic_commands.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/basic_commands.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/contact_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/contact_handlers.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/keyboards.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/keyboards.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/server/webhook_server.py" beforeDir="false" afterPath="$PROJECT_DIR$/server/webhook_server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/handlers/rate_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/rate_handlers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -59,6 +67,7 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;Python tests.Python tests in test_weather.py.executor&quot;: &quot;Run&quot;,
     &quot;Python.basic_commands.executor&quot;: &quot;Run&quot;,
     &quot;Python.bot.executor&quot;: &quot;Run&quot;,
     &quot;Python.publish_cloudpub.executor&quot;: &quot;Run&quot;,
@@ -103,7 +112,9 @@
       <workItem from="1739815054027" duration="10523000" />
       <workItem from="1739888584619" duration="1152000" />
       <workItem from="1739892749526" duration="8000" />
-      <workItem from="1739900290695" duration="5714000" />
+      <workItem from="1739900290695" duration="12171000" />
+      <workItem from="1739988900009" duration="1109000" />
+      <workItem from="1739990400392" duration="3404000" />
     </task>
     <task id="LOCAL-00001" summary="New structure">
       <option name="closed" value="true" />
@@ -209,7 +220,15 @@
       <option name="project" value="LOCAL" />
       <updated>1739823514849</updated>
     </task>
-    <option name="localTasksCounter" value="14" />
+    <task id="LOCAL-00014" summary="inline run!">
+      <option name="closed" value="true" />
+      <created>1739978305881</created>
+      <option name="number" value="00014" />
+      <option name="presentableId" value="LOCAL-00014" />
+      <option name="project" value="LOCAL" />
+      <updated>1739978305882</updated>
+    </task>
+    <option name="localTasksCounter" value="15" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -240,7 +259,8 @@
     <MESSAGE value="run" />
     <MESSAGE value="razdelenie gif and sms" />
     <MESSAGE value="intermediate inline" />
-    <option name="LAST_COMMIT_MESSAGE" value="intermediate inline" />
+    <MESSAGE value="inline run!" />
+    <option name="LAST_COMMIT_MESSAGE" value="inline run!" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$server.coverage" NAME="server Coverage Results" MODIFIED="1738496046843" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
@@ -250,5 +270,6 @@
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$resize_gifs.coverage" NAME="resize_gifs Coverage Results" MODIFIED="1739738530988" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$webhook_handler.coverage" NAME="webhook_handler Coverage Results" MODIFIED="1738448371768" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$publish_cloudpub.coverage" NAME="publish_cloudpub Coverage Results" MODIFIED="1738512356834" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
+    <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$.coverage" NAME=" Coverage Results" MODIFIED="1739984939777" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
   </component>
 </project>
