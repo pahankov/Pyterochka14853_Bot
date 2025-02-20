@@ -40,3 +40,12 @@ async def handle_rate(callback: types.CallbackQuery):
         )
     except TelegramBadRequest as e:
         logger.warning(f"Ошибка: {str(e)}")
+
+
+@router.callback_query(TextFilter("recipes"))
+async def handle_recipes(callback: types.CallbackQuery):
+    try:
+        await callback.answer()
+        await callback.message.answer("🍳 Раздел 'Рецепты' в разработке! Скоро будет доступен!")
+    except Exception as e:
+        logger.error(f"Ошибка в обработчике рецептов: {str(e)}")

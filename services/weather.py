@@ -1,13 +1,18 @@
 import requests
+import json
 import logging
 from datetime import datetime
 from config.settings import WEATHER_API_KEY, WEATHER_LAT, WEATHER_LON
+from services.cache import cache
 
 logger = logging.getLogger(__name__)
 
 
 def get_weather() -> dict:
-    """Возвращает текущую погоду и прогноз."""
+    cached = cache.get("weather_data")
+    if cached:
+        return cached
+
     try:
         # Текущая погода
         current_url = f"https://api.openweathermap.org/data/2.5/weather?lat={WEATHER_LAT}&lon={WEATHER_LON}&appid={WEATHER_API_KEY}&units=metric&lang=ru"
@@ -21,7 +26,7 @@ def get_weather() -> dict:
         forecast_response.raise_for_status()
         forecast_data = forecast_response.json()
 
-        return {
+        result = {
             "current": {
                 "temp": current_data["main"]["temp"],
                 "description": current_data["weather"][0]["description"],
@@ -35,6 +40,9 @@ def get_weather() -> dict:
                 } for item in forecast_data["list"][1:4]
             ]
         }
+
+        cache.set("weather_data", result, ttl=1800)
+        return result
 
     except Exception as e:
         logger.error(f"Ошибка запроса погоды: {str(e)}", exc_info=True)

@@ -16,3 +16,4 @@ WEBHOOK_PATH = "/webhook"
 GIF_FOLDER = "C:/PythonProect/Pyterochka14853_Bot/icon/icon_resized"
 WEATHER_ICON_URL = "https://openweathermap.org/img/wn/{icon}@2x.png"
 ADMIN_ID = 1968660815  # Ваш Telegram ID
+REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379/0")
