@@ -1,30 +1,24 @@
 import requests
-import json
 import logging
 from datetime import datetime
 from config.settings import WEATHER_API_KEY, WEATHER_LAT, WEATHER_LON
 from services.cache import cache
 
 logger = logging.getLogger(__name__)
+CACHE_KEY = "weather_data"
 
 
 def get_weather() -> dict:
-    cached = cache.get("weather_data")
+    cached = cache.get(CACHE_KEY)
     if cached:
         return cached
 
     try:
-        # Текущая погода
         current_url = f"https://api.openweathermap.org/data/2.5/weather?lat={WEATHER_LAT}&lon={WEATHER_LON}&appid={WEATHER_API_KEY}&units=metric&lang=ru"
-        current_response = requests.get(current_url)
-        current_response.raise_for_status()
-        current_data = current_response.json()
+        current_data = requests.get(current_url).json()
 
-        # Прогноз
         forecast_url = f"https://api.openweathermap.org/data/2.5/forecast?lat={WEATHER_LAT}&lon={WEATHER_LON}&appid={WEATHER_API_KEY}&units=metric&lang=ru&cnt=4"
-        forecast_response = requests.get(forecast_url)
-        forecast_response.raise_for_status()
-        forecast_data = forecast_response.json()
+        forecast_data = requests.get(forecast_url).json()
 
         result = {
             "current": {
@@ -41,11 +35,9 @@ def get_weather() -> dict:
             ]
         }
 
-        cache.set("weather_data", result, ttl=1800)
+        cache.set(CACHE_KEY, result, 1800)
         return result
 
     except Exception as e:
-        logger.error(f"Ошибка запроса погоды: {str(e)}", exc_info=True)
-        return {"error": str(e)}
-
-
+        logger.error(f"Ошибка: {str(e)}")
+        return {"error": "Не удалось получить данные"}

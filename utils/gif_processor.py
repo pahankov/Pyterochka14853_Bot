@@ -1,64 +1,53 @@
 import imageio
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
+import requests
 import logging
-from pathlib import Path
+from io import BytesIO
 
 logger = logging.getLogger(__name__)
 
 
 def combine_gif_and_weather(gif_path: str, weather_data: dict, output_path: str) -> bool:
-    """Склеивает GIF и виджет погоды."""
+    """Склеивает GIF с виджетом погоды (включая иконку)"""
     try:
-        # Загрузка GIF
-        gif_frames = imageio.mimread(gif_path)
-        if not gif_frames:
-            raise ValueError("GIF не содержит кадров")
+        # Загрузка иконки
+        icon_url = f"https://openweathermap.org/img/wn/{weather_data['current']['icon']}@4x.png"
+        response = requests.get(icon_url)
+        icon = Image.open(BytesIO(response.content)).convert("RGBA")
 
-        # Размеры
-        gif_width = gif_frames[0].shape[1]
-        gif_height = gif_frames[0].shape[0]
-        widget_width = 300
-
-        # Виджет погоды
-        widget = Image.new("RGB", (widget_width, gif_height), "#f0f0f0")
+        # Создание виджета
+        widget_width = 400
+        widget = Image.new("RGBA", (widget_width, 320), (255, 255, 255, 200))
         draw = ImageDraw.Draw(widget)
 
-        # Шрифт (используйте свой путь при необходимости)
-        try:
-            font = ImageFont.truetype("arial.ttf", 28)
-        except IOError:
-            font = ImageFont.load_default(28)
+        # Добавление иконки
+        widget.paste(icon, (50, 20), icon)
 
-        # Текст
+        # Текст погоды
+        font = ImageFont.truetype("arial.ttf", 24)
         text = (
-            f"🌡️ Сейчас: {weather_data['current']['temp']}°C\n"
-            f"🌤️ {weather_data['current']['description'].capitalize()}\n\n"
-            "🕒 Прогноз:\n"
-            f"➡️ {weather_data['forecast'][0]['time']}: {weather_data['forecast'][0]['temp']}°C\n"
-            f"➡️ {weather_data['forecast'][1]['time']}: {weather_data['forecast'][1]['temp']}°C\n"
-            f"➡️ {weather_data['forecast'][2]['time']}: {weather_data['forecast'][2]['temp']}°C"
+                f"Температура: {weather_data['current']['temp']}°C\n"
+                f"Описание: {weather_data['current']['description']}\n"
+                "Прогноз на 3 часа:\n" +
+                "\n".join([f"{item['time']}: {item['temp']}°C" for item in weather_data['forecast']])
         )
+        draw.multiline_text((50, 180), text, fill="black", font=font, spacing=10)
 
-        # Рисуем текст
-        draw.multiline_text((20, 20), text, fill="#333333", font=font, spacing=12)
-
-        # Склейка кадров
+        # Обработка GIF
+        gif_frames = imageio.mimread(gif_path)
         combined_frames = []
+
         for frame in gif_frames:
-            if frame.shape[2] == 4:
-                frame = frame[..., :3]
-
-            gif_image = Image.fromarray(frame)
-            combined = Image.new("RGB", (gif_width + widget_width, gif_height))
+            gif_image = Image.fromarray(frame).convert("RGBA")
+            combined = Image.new("RGBA", (gif_image.width + widget_width, gif_image.height))
             combined.paste(gif_image, (0, 0))
-            combined.paste(widget, (gif_width, 0))
-            combined_frames.append(np.array(combined))
+            combined.paste(widget, (gif_image.width, 0), widget)
+            combined_frames.append(np.array(combined.convert("RGB")))
 
-        # Сохранение
         imageio.mimsave(output_path, combined_frames, duration=0.1)
         return True
 
     except Exception as e:
-        logger.error(f"Ошибка склейки: {str(e)}", exc_info=True)
+        logger.error(f"Ошибка: {str(e)}", exc_info=True)
         return False

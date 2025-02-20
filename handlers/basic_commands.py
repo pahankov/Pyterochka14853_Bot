@@ -1,4 +1,3 @@
-import logging
 from aiogram import Router, types
 from aiogram.filters import Command
 from aiogram.types import FSInputFile
@@ -8,7 +7,9 @@ from config.settings import GIF_FOLDER
 from utils.gif_rotator import GifRotator
 from utils.gif_processor import combine_gif_and_weather
 from services.weather import get_weather
+from services.cache import cache
 from .keyboards import get_main_inline_keyboard
+import logging
 
 logger = logging.getLogger(__name__)
 router = Router()
@@ -21,7 +22,6 @@ async def start_handler(message: types.Message):
         user = message.from_user
         full_name = f"{user.first_name} {user.last_name}" if user.last_name else user.first_name
 
-        # Генерация гифки с погодой
         gif_path = gif_rotator.get_next_gif()
         output_path = "temp/weather.gif"
         weather_data = get_weather()
@@ -29,12 +29,10 @@ async def start_handler(message: types.Message):
         if "error" in weather_data:
             raise RuntimeError(weather_data["error"])
 
-        # Замените add_weather_to_gif на combine_gif_and_weather
         success = combine_gif_and_weather(gif_path, weather_data, output_path)
         if not success:
             raise RuntimeError("Ошибка создания гифки")
 
-        # Отправка
         await message.answer_animation(FSInputFile(output_path))
         await asyncio.sleep(1)
 
