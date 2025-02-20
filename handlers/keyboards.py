@@ -26,3 +26,12 @@ def get_vacancy_inline_keyboard() -> InlineKeyboardMarkup:
     builder.button(text="ℹ️ Узнать", url="https://career.x5.ru")
     builder.adjust(2)
     return builder.as_markup()
+
+
+
+def get_rating_keyboard() -> InlineKeyboardMarkup:
+    builder = InlineKeyboardBuilder()
+    for i in range(11):
+        builder.button(text=str(i), callback_data=f"rate_{i}")
+    builder.adjust(3)  # 3 кнопки в ряду
+    return builder.as_markup()

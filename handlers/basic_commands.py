@@ -6,7 +6,7 @@ from pathlib import Path
 import asyncio
 from config.settings import GIF_FOLDER
 from utils.gif_rotator import GifRotator
-from utils.gif_processor import add_weather_to_gif
+from utils.gif_processor import combine_gif_and_weather
 from services.weather import get_weather
 from .keyboards import get_main_inline_keyboard
 
@@ -29,9 +29,12 @@ async def start_handler(message: types.Message):
         if "error" in weather_data:
             raise RuntimeError(weather_data["error"])
 
-        add_weather_to_gif(gif_path, output_path, weather_data)
+        # Замените add_weather_to_gif на combine_gif_and_weather
+        success = combine_gif_and_weather(gif_path, weather_data, output_path)
+        if not success:
+            raise RuntimeError("Ошибка создания гифки")
 
-        # Отправка гифки и приветствия
+        # Отправка
         await message.answer_animation(FSInputFile(output_path))
         await asyncio.sleep(1)
 
@@ -44,4 +47,3 @@ async def start_handler(message: types.Message):
     except Exception as e:
         logger.error(f"Ошибка: {str(e)}", exc_info=True)
         await message.answer("🚨 Произошла ошибка.")
-

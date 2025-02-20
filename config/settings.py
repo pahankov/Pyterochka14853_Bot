@@ -15,3 +15,4 @@ WEBHOOK_HOST = "https://pahankov.ru"
 WEBHOOK_PATH = "/webhook"
 GIF_FOLDER = "C:/PythonProect/Pyterochka14853_Bot/icon/icon_resized"
 WEATHER_ICON_URL = "https://openweathermap.org/img/wn/{icon}@2x.png"
+ADMIN_ID = 1968660815  # Ваш Telegram ID
