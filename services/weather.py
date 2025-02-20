@@ -47,3 +47,5 @@ def get_weather() -> dict:
     except Exception as e:
         logger.error(f"Ошибка запроса погоды: {str(e)}", exc_info=True)
         return {"error": str(e)}
+
+

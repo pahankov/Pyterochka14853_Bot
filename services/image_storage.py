@@ -1,18 +1,17 @@
 import os
-from aiogram import Bot
+from pathlib import Path
 from aiogram.types import PhotoSize
+# Инициализируем пустым значением
+CURRENT_OFFER_PATH = ""
 
-# Глобальная переменная для хранения пути к текущему предложению
-CURRENT_OFFER_PATH = None
-
-async def save_offer_photo(bot: Bot, photo: PhotoSize, user_id: int) -> str:
-    """Сохраняет фото предложения дня и возвращает путь."""
+async def save_offer_photo(bot, photo: PhotoSize, user_id: int) -> str:
     global CURRENT_OFFER_PATH
-    os.makedirs("offers", exist_ok=True)
+    Path("offers").mkdir(exist_ok=True)
     CURRENT_OFFER_PATH = f"offers/{user_id}_offer.jpg"
     await bot.download(photo, destination=CURRENT_OFFER_PATH)
     return CURRENT_OFFER_PATH
 
 def get_current_offer() -> str | None:
-    """Возвращает путь к текущему предложению дня."""
-    return CURRENT_OFFER_PATH if os.path.exists(CURRENT_OFFER_PATH) else None
+    if CURRENT_OFFER_PATH and Path(CURRENT_OFFER_PATH).exists():
+        return CURRENT_OFFER_PATH
+    return None

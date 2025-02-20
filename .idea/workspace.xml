@@ -4,14 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8c56b6b8-a272-4f40-81c0-15347dd20bd9" name="Changes" comment="restore gif and buttons">
-      <change afterPath="$PROJECT_DIR$/services/cache.py" afterDir="false" />
+    <list default="true" id="8c56b6b8-a272-4f40-81c0-15347dd20bd9" name="Changes" comment="enabled caching and weather font fix">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/callbacks.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/callbacks.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/handlers/recipe_handlers.py" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/recipe_handlers.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/services/image_storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/image_storage.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/services/weather.py" beforeDir="false" afterPath="$PROJECT_DIR$/services/weather.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/utils/gif_processor.py" beforeDir="false" afterPath="$PROJECT_DIR$/utils/gif_processor.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -55,29 +52,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Python tests.Python tests in test_weather.py.executor&quot;: &quot;Run&quot;,
-    &quot;Python.basic_commands.executor&quot;: &quot;Run&quot;,
-    &quot;Python.bot.executor&quot;: &quot;Run&quot;,
-    &quot;Python.publish_cloudpub.executor&quot;: &quot;Run&quot;,
-    &quot;Python.resize_gifs.executor&quot;: &quot;Run&quot;,
-    &quot;Python.server.executor&quot;: &quot;Run&quot;,
-    &quot;Python.webhook_handler.executor&quot;: &quot;Run&quot;,
-    &quot;Python.webhook_monitor.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/PythonProect/InlineKeyboard&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.qodana&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Python tests.Python tests in test_weather.py.executor": "Run",
+    "Python.basic_commands.executor": "Run",
+    "Python.bot.executor": "Run",
+    "Python.image_storage.executor": "Run",
+    "Python.publish_cloudpub.executor": "Run",
+    "Python.resize_gifs.executor": "Run",
+    "Python.server.executor": "Run",
+    "Python.webhook_handler.executor": "Run",
+    "Python.webhook_monitor.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "ignore.virus.scanning.warn.message": "true",
+    "last_opened_file_path": "C:/PythonProect/InlineKeyboard",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "settings.editor.selected.configurable": "settings.qodana",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -104,7 +102,7 @@
       <workItem from="1739892749526" duration="8000" />
       <workItem from="1739900290695" duration="12171000" />
       <workItem from="1739988900009" duration="1109000" />
-      <workItem from="1739990400392" duration="17125000" />
+      <workItem from="1739990400392" duration="18403000" />
     </task>
     <task id="LOCAL-00001" summary="New structure">
       <option name="closed" value="true" />
@@ -242,7 +240,15 @@
       <option name="project" value="LOCAL" />
       <updated>1740071016334</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="enabled caching and weather font fix">
+      <option name="closed" value="true" />
+      <created>1740075930794</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1740075930794</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -277,13 +283,15 @@
     <MESSAGE value="intermade tests" />
     <MESSAGE value=" tests run!" />
     <MESSAGE value="restore gif and buttons" />
-    <option name="LAST_COMMIT_MESSAGE" value="restore gif and buttons" />
+    <MESSAGE value="enabled caching and weather font fix" />
+    <option name="LAST_COMMIT_MESSAGE" value="enabled caching and weather font fix" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$server.coverage" NAME="server Coverage Results" MODIFIED="1738496046843" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$webhook_monitor.coverage" NAME="webhook_monitor Coverage Results" MODIFIED="1738518865395" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
+    <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$image_storage.coverage" NAME="image_storage Coverage Results" MODIFIED="1740077591911" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/services" />
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$basic_commands.coverage" NAME="basic_commands Coverage Results" MODIFIED="1739735766054" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/handlers" />
-    <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$bot.coverage" NAME="bot Coverage Results" MODIFIED="1740075717283" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$bot.coverage" NAME="bot Coverage Results" MODIFIED="1740077818525" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$resize_gifs.coverage" NAME="resize_gifs Coverage Results" MODIFIED="1739738530988" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/utils" />
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$webhook_handler.coverage" NAME="webhook_handler Coverage Results" MODIFIED="1738448371768" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
     <SUITE FILE_PATH="coverage/Pyterochka14853_Bot$publish_cloudpub.coverage" NAME="publish_cloudpub Coverage Results" MODIFIED="1738512356834" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/server" />
